@@ -16,6 +16,11 @@ CAT_FILE = os.path.join(BASE_DIR, "categories.json")
 # 2. Async Database Setup
 async def init_db():
     async with aiosqlite.connect(DB_FILE) as db:
+        # Enable WAL mode for better concurrency and fewer locks
+        await db.execute("PRAGMA journal_mode=WAL")
+        # Set a timeout so the app waits for a lock rather than failing instantly
+        await db.execute("PRAGMA busy_timeout=5000")
+        
         await db.execute("""
             CREATE TABLE IF NOT EXISTS transactions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
