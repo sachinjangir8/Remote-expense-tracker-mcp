@@ -9,20 +9,13 @@ from fastmcp import FastMCP
 
 # 1. Initialize Server (Remote/HTTP Mode)
 mcp = FastMCP("Expense-Tracker-Pro")
-DB_FILE = os.path.join(
-    os.path.expanduser("~"),
-    "expense_tracker",
-    "expenses.db"
-)
-os.makedirs(os.path.dirname(DB_FILE), exist_ok=True)
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "expenses.db")
 CAT_FILE = os.path.join(BASE_DIR, "categories.json")
 
 # 2. Async Database Setup
 async def init_db():
-    async with aiosqlite.connect(DB_FILE,
-    timeout=10,
-    isolation_level=None) as db:
+    async with aiosqlite.connect(DB_FILE) as db:
         # Enable WAL mode for better concurrency and fewer locks
         await db.execute("PRAGMA journal_mode=WAL")
         # Set a timeout so the app waits for a lock rather than failing instantly
@@ -58,9 +51,7 @@ async def add_transaction(amount: float, category: str, subcategory: str, type: 
     if category not in data or subcategory not in data[category]:
         return f"❌ Error: Invalid category/subcategory."
 
-    async with aiosqlite.connect(DB_FILE,
-    timeout=10,
-    isolation_level=None) as db:
+    async with aiosqlite.connect(DB_FILE) as db:
         await db.execute(
             "INSERT INTO transactions (date, amount, category, type, note) VALUES (?, ?, ?, ?, ?)",
             (datetime.now().strftime("%Y-%m-%d"), amount, f"{category}:{subcategory}", type, note)
@@ -71,9 +62,7 @@ async def add_transaction(amount: float, category: str, subcategory: str, type: 
 @mcp.tool()
 async def list_transactions(limit: int = 20) -> List[dict]:
     """Read: Fetches the most recent transactions."""
-    async with aiosqlite.connect(DB_FILE,
-    timeout=10,
-    isolation_level=None) as db:
+    async with aiosqlite.connect(DB_FILE) as db:
         db.row_factory = aiosqlite.Row
         async with db.execute("SELECT * FROM transactions ORDER BY id DESC LIMIT ?", (limit,)) as cursor:
             rows = await cursor.fetchall()
@@ -82,9 +71,7 @@ async def list_transactions(limit: int = 20) -> List[dict]:
 @mcp.tool()
 async def update_transaction(transaction_id: int, amount: Optional[float] = None, note: Optional[str] = None) -> str:
     """Update: Modifies an existing transaction's amount or note by ID."""
-    async with aiosqlite.connect(DB_FILE,
-    timeout=10,
-    isolation_level=None) as db:
+    async with aiosqlite.connect(DB_FILE) as db:
         if amount:
             await db.execute("UPDATE transactions SET amount = ? WHERE id = ?", (amount, transaction_id))
         if note:
@@ -95,9 +82,7 @@ async def update_transaction(transaction_id: int, amount: Optional[float] = None
 @mcp.tool()
 async def delete_transaction(transaction_id: int) -> str:
     """Delete: Permanently removes a transaction record."""
-    async with aiosqlite.connect(DB_FILE,
-    timeout=10,
-    isolation_level=None) as db:
+    async with aiosqlite.connect(DB_FILE) as db:
         await db.execute("DELETE FROM transactions WHERE id = ?", (transaction_id,))
         await db.commit()
     return f"🗑️ Deleted transaction {transaction_id}."
@@ -105,9 +90,7 @@ async def delete_transaction(transaction_id: int) -> str:
 @mcp.tool()
 async def get_balance() -> str:
     """Analytics: Calculates total credits, expenses, and net balance."""
-    async with aiosqlite.connect(DB_FILE,
-    timeout=10,
-    isolation_level=None) as db:
+    async with aiosqlite.connect(DB_FILE) as db:
         async with db.execute("SELECT type, SUM(amount) FROM transactions GROUP BY type") as cursor:
             results = {row[0]: row[1] for row in await cursor.fetchall()}
             
