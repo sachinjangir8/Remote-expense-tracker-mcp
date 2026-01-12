@@ -1,0 +1,19 @@
+{
+    "categories": {
+      "Housing": ["Rent", "Mortgage", "Property Tax", "HOA Fees", "Home Repairs", "Home Insurance"],
+      "Utilities": ["Electricity", "Water", "Gas", "Internet", "Mobile Phone", "Trash & Recycling"],
+      "Food": ["Groceries", "Restaurants", "Coffee Shops", "Fast Food", "Alcohol & Bars"],
+      "Transportation": ["Fuel", "Public Transit", "Ride Share", "Car Payment", "Car Insurance", "Maintenance", "Parking & Tolls"],
+      "Health": ["Health Insurance", "Doctor Visits", "Pharmacy", "Dental", "Vision", "Gym & Fitness", "Therapy"],
+      "Personal Care": ["Haircuts", "Cosmetics", "Toiletries", "Laundry & Dry Cleaning", "Clothing", "Shoes"],
+      "Education": ["Tuition", "Books", "School Supplies", "Online Courses", "Student Loans"],
+      "Entertainment": ["Streaming Services", "Movies", "Concerts", "Gaming", "Hobbies", "Books & Magazines"],
+      "Family": ["Childcare", "Babysitting", "School Fees", "Toys", "Elder Care"],
+      "Pets": ["Pet Food", "Vet Visits", "Pet Insurance", "Grooming", "Pet Supplies"],
+      "Debt": ["Credit Card Payment", "Personal Loan", "Interest Fees"],
+      "Financial": ["Emergency Fund", "Retirement", "Investment", "Taxes", "Bank Fees"],
+      "Gifts & Giving": ["Charity", "Birthdays", "Holidays", "Weddings"],
+      "Travel": ["Flights", "Hotel", "Vacation Food", "Sightseeing"],
+      "Income": ["Salary", "Bonus", "Freelance", "Gifts Received", "Investment Returns"]
+    }
+  }
